@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Account System</title>
+</head>
+
+<body>
+    <!-- Sign Up Form -->
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+        <input type="text" id="regUsername" placeholder="Username" required><br><br>
+        <input type="password" id="regPassword" placeholder="Password" required><br><br>
+        <button type="submit">Register</button>
+    </form>
+
+    <hr>
+
+    <!-- Login Form -->
+    <h2>Login</h2>
+    <form id="loginForm">
+        <input type="text" id="loginUsername" placeholder="Username" required><br><br>
+        <input type="password" id="loginPassword" placeholder="Password" required><br><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <h3 id="message" style="color: blue;"></h3>
+
+    <script>
+        const messageEl = document.getElementById('message');
+
+        // Helper function to send requests to the server
+        async function sendAuthRequest(url, username, password) {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+                messageEl.textContent = data.message;
+            } catch (error) {
+                messageEl.textContent = "Error connecting to server.";
+            }
+        }
+
+        // Handle Registration
+        document.getElementById('signupForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const u = document.getElementById('regUsername').value;
+            const p = document.getElementById('regPassword').value;
+            sendAuthRequest('/api/register', u, p);
+        });
+
+        // Handle Login
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const u = document.getElementById('loginUsername').value;
+            const p = document.getElementById('loginPassword').value;
+            sendAuthRequest('/api/login', u, p);
+        });
+    </script>
+</body>
+
+</html>
